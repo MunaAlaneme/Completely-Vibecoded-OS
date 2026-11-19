@@ -1,0 +1,1 @@
+clang --target=i686-unknown-none-elf -ffreestanding -fno-pie -O2 -arch arm64 -Wl,-search_paths_first -Wl,-headerpad_max_install_names -fuse-ld=lld "-T/Users/mac/Downloads/Completely Vibecoded OS/linker.ld" -nostdlib CMakeFiles/kernel.elf.dir/boot/boot.S.o CMakeFiles/kernel.elf.dir/kernel/main.c.o -o kernel.elf

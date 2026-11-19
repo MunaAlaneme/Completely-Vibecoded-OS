@@ -1,0 +1,26 @@
+cmake_minimum_required(VERSION 3.20)
+project(vibecoded_os_i386 C ASM)
+
+set(CMAKE_SYSTEM_NAME Generic)
+set(CMAKE_SYSTEM_PROCESSOR i386)
+set(CMAKE_C_COMPILER_WORKS 1)
+set(CMAKE_ASM_COMPILER_WORKS 1)
+
+find_program(I686_GCC i686-elf-gcc)
+if(I686_GCC)
+    set(CMAKE_C_COMPILER ${I686_GCC})
+    set(CMAKE_ASM_COMPILER ${I686_GCC})
+    set(CMAKE_C_FLAGS "-m32 -ffreestanding -fno-pie -O2")
+    set(CMAKE_ASM_FLAGS "-m32")
+    set(MY_LINK_FLAGS "-T${CMAKE_SOURCE_DIR}/linker.ld" "-ffreestanding" "-O2" "-nostdlib")
+else()
+    set(CMAKE_C_COMPILER clang)
+    set(CMAKE_ASM_COMPILER clang)
+    set(CMAKE_C_FLAGS "--target=i686-unknown-none-elf -ffreestanding -fno-pie -O2")
+    set(CMAKE_ASM_FLAGS "--target=i686-unknown-none-elf")
+    # Properly quote path containing spaces for Clang/LLD
+    set(MY_LINK_FLAGS "-fuse-ld=lld" "-T${CMAKE_SOURCE_DIR}/linker.ld" "-nostdlib")
+endif()
+
+add_executable(kernel.elf boot/boot.S kernel/main.c)
+target_link_options(kernel.elf PRIVATE ${MY_LINK_FLAGS})
